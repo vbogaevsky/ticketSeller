@@ -85,13 +85,14 @@ begin
   for i := 1 to 4 do
   begin
     if t[i, depr] = tm then
-    begin
-      timeSearch := i;
-    end
-  end
+      tm := i  
+  end;
+  if (tm < 1) or (tm > 4) then
+    timeSearch := 0
+   else timeSearch := tm
 end;
 
-begin
+Begin
   work := true;
   for i := 1 to 4 do
     for j := 1 to 3 do
@@ -107,39 +108,44 @@ begin
     welcomer(departure, destination, time);
     stops := abs(departure - destination);
     if departure > destination then
-    begin
-      direction := false;
-      case departure of
-        2: departure := departure + 4;
-        3: departure := departure + 2;
-      end
-    end;    
+		begin
+			direction := false;
+			case departure of
+			2: departure := departure + 4;
+			3: departure := departure + 2;
+		end
+    end;   
     time := timeSearch(timeTable, departure, time);
-    if direction then
-    begin
-      for i := departure to stops do
-      begin
-        if fromAtoD[time, i] < 3 then
-          fromAtoD[time, i] := fromAtoD[time, i] + 1          
-        else full := true
-      end;
-    end
-    else
-    begin
-      departure := departure - 3;
-      for i := departure to stops do
-      begin
-        if fromDtoA[time, departure] < 3 then
-          fromDtoA[time, i] := fromDtoA[time, i] + 1              
-        else full := true
-      end
-    end;
-    if full then
-      writeln('No seats are available for this time and route.')
-    else writeln('Ticket cost is ', Price * stops, '.');
+	if time = 0 then
+		writeln('There is no departures for this time')
+	else
+		begin	
+			if direction then
+				begin
+					for i := departure to stops do
+						if fromAtoD[time, i] >= 3 then
+							full := true;
+					if not full then
+						for i := departure to stops do
+							fromAtoD[time, i] := fromAtoD[time, i] + 1;
+				end
+			else
+				begin
+					departure := departure - 3;
+					for i := departure to stops do
+					if fromDtoA[time, i] >= 3 then
+						full := true;
+					if not full then
+						for i := departure to stops do
+							fromDtoA[time, i] := fromDtoA[time, i] + 1;
+				end;
+			if full then
+				writeln('No seats are available for this time and route.')
+			else writeln('Ticket cost is ', Price * stops, '.');
+		end;	
     writeln('Sell another ticket? (Y/N)');
     readln(ans);
     if ((ans = 'N') or (ans = 'n')) then
-      work := false;
+      work := false
   end
-end.
+End.
