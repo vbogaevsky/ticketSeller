@@ -92,7 +92,7 @@ begin
   else timeSearch := tm
 end;
 
-begin
+Begin
   work := true;
   for i := 1 to 4 do
     for j := 1 to 3 do
@@ -162,4 +162,4 @@ begin
     if ((ans = 'N') or (ans = 'n')) then
       work := false
   end
-end.
+End.
