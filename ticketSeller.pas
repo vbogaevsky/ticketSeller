@@ -17,25 +17,25 @@ var
 
 procedure printTimeTable();
 begin
-  println(' ___________________________________ ');
-  println('|                 |                 |');
-  println('|   From A to D   |   From D to A   |');
-  println('|_________________|_________________|');
-  println('|     |     |     |     |     |     |');
-  println('|  A  |  B  |  C  |  D  |  C  |  B  |');
-  println('|_____|_____|_____|_____|_____|_____|');
-  println('|     |     |     |     |     |     |');
-  println('| 7:00| 7:40| 8:20| 9:00| 9:40|10:20|');
-  println('|_____|_____|_____|_____|_____|_____|');
-  println('|     |     |     |     |     |     |');
-  println('|11:00|11:40|12:20|13:00|13:40|14:20|');
-  println('|_____|_____|_____|_____|_____|_____|');
-  println('|     |     |     |     |     |     |');
-  println('|15:00|15:40|16:20|17:00|17:40|18:40|');
-  println('|_____|_____|_____|_____|_____|_____|');
-  println('|     |     |     |     |     |     |');
-  println('|19:00|19:40|20:20|21:00|21:40|22:20|');
-  println('|_____|_____|_____|_____|_____|_____|');
+  writeln(' ___________________________________ ');
+  writeln('|                 |                 |');
+  writeln('|   From A to D   |   From D to A   |');
+  writeln('|_________________|_________________|');
+  writeln('|     |     |     |     |     |     |');
+  writeln('|  A  |  B  |  C  |  D  |  C  |  B  |');
+  writeln('|_____|_____|_____|_____|_____|_____|');
+  writeln('|     |     |     |     |     |     |');
+  writeln('| 7:00| 7:40| 8:20| 9:00| 9:40|10:20|');
+  writeln('|_____|_____|_____|_____|_____|_____|');
+  writeln('|     |     |     |     |     |     |');
+  writeln('|11:00|11:40|12:20|13:00|13:40|14:20|');
+  writeln('|_____|_____|_____|_____|_____|_____|');
+  writeln('|     |     |     |     |     |     |');
+  writeln('|15:00|15:40|16:20|17:00|17:40|18:40|');
+  writeln('|_____|_____|_____|_____|_____|_____|');
+  writeln('|     |     |     |     |     |     |');
+  writeln('|19:00|19:40|20:20|21:00|21:40|22:20|');
+  writeln('|_____|_____|_____|_____|_____|_____|');
 end;
 
 procedure welcomer(var depr, dest: byte; var tm: integer);
@@ -85,14 +85,14 @@ begin
   for i := 1 to 4 do
   begin
     if t[i, depr] = tm then
-      tm := i  
+      tm := i
   end;
   if (tm < 1) or (tm > 4) then
     timeSearch := 0
-   else timeSearch := tm
+  else timeSearch := tm
 end;
 
-Begin
+begin
   work := true;
   for i := 1 to 4 do
     for j := 1 to 3 do
@@ -108,44 +108,58 @@ Begin
     welcomer(departure, destination, time);
     stops := abs(departure - destination);
     if departure > destination then
-		begin
-			direction := false;
-			case departure of
-			2: departure := departure + 4;
-			3: departure := departure + 2;
-		end
+    begin
+      direction := false;
+      case departure of
+        2: departure := departure + 4;
+        3: departure := departure + 2;
+      end
     end;   
     time := timeSearch(timeTable, departure, time);
-	if time = 0 then
-		writeln('There is no departures for this time')
-	else
-		begin	
-			if direction then
-				begin
-					for i := departure to stops do
-						if fromAtoD[time, i] >= 3 then
-							full := true;
-					if not full then
-						for i := departure to stops do
-							fromAtoD[time, i] := fromAtoD[time, i] + 1;
-				end
-			else
-				begin
-					departure := departure - 3;
-					for i := departure to stops do
-					if fromDtoA[time, i] >= 3 then
-						full := true;
-					if not full then
-						for i := departure to stops do
-							fromDtoA[time, i] := fromDtoA[time, i] + 1;
-				end;
-			if full then
-				writeln('No seats are available for this time and route.')
-			else writeln('Ticket cost is ', Price * stops, '.');
-		end;	
+    if time = 0 then
+      writeln('There is no departures for this time')
+   	else
+    begin
+      if direction then
+        if stops = 1 then
+        begin
+          if fromAtoD[time, departure] >= 3 then
+            full := true
+          else	fromAtoD[time, departure] := fromAtoD[time, departure] + 1;
+        end
+    				else		
+        begin
+          for i := departure to stops do
+            if fromAtoD[time, i] >= 3 then
+              full := true;
+          if not full then
+            for i := departure to stops do
+              fromAtoD[time, i] := fromAtoD[time, i] + 1          
+        end
+   			else
+      if stops = 1 then
+        begin
+          if fromAtoD[time, departure] >= 3 then
+            full := true
+          else fromAtoD[time, departure] := fromAtoD[time, departure] + 1;
+      end
+      else	
+        begin
+          departure := departure - 3;
+          for i := departure to stops do
+            if fromDtoA[time, i] >= 3 then
+              full := true;
+          if not full then
+            for i := departure to stops do
+              fromDtoA[time, i] := fromDtoA[time, i] + 1;
+        end;
+    if full then
+      writeln('No seats are available for this time and route.')
+    else writeln('Ticket cost is ', Price * stops, '.')
+    end;	
     writeln('Sell another ticket? (Y/N)');
     readln(ans);
     if ((ans = 'N') or (ans = 'n')) then
       work := false
   end
-End.
+end.
